@@ -1,0 +1,32 @@
+//@version=5
+strategy("Ichimoku Two Trades Strategy", overlay=true, shorttitle="Ichimoku 2 Trades", pyramiding=2)
+
+// Ichimoku Cloud settings
+conversionLinePeriods = input(6, title="Tenkan Sen (Conversion Line) Periods")
+baseLinePeriods = input(12, title="Kijun Sen (Base Line) Periods")
+laggingSpan2Periods = input(35, title="Chikou Span (Lagging Span) Periods")
+displacement = input(26, title="Displacement")
+
+// Ichimoku Cloud calculations
+tenkanSen = (ta.highest(high, conversionLinePeriods) + ta.lowest(low, conversionLinePeriods)) / 2
+kijunSen = (ta.highest(high, baseLinePeriods) + ta.lowest(low, baseLinePeriods)) / 2
+senkouSpanB = (ta.highest(high, laggingSpan2Periods) + ta.lowest(low, laggingSpan2Periods)) / 2
+
+// Entry and Exit Rules
+longCondition = ta.crossover(close, tenkanSen) and ta.crossover(close, kijunSen) and close > senkouSpanB[displacement]
+exitLongCondition = ta.crossunder(close, tenkanSen) or ta.crossunder(close, kijunSen) or close < senkouSpanB[displacement]
+
+shortCondition = ta.crossunder(close, tenkanSen) and ta.crossunder(close, kijunSen) and close < senkouSpanB[displacement]
+exitShortCondition = ta.crossover(close, tenkanSen) or ta.crossover(close, kijunSen) or close > senkouSpanB[displacement]
+
+// Strategy order placement
+strategy.entry("Long", strategy.long, when=longCondition)
+strategy.close("Long", when=exitLongCondition or longCondition) // Close on exit condition or if a new long condition arises
+
+strategy.entry("Short", strategy.short, when=shortCondition)
+strategy.close("Short", when=exitShortCondition or shortCondition) // Close on exit condition or if a new short condition arises
+
+// Plot Ichimoku Cloud components
+plot(tenkanSen, color=color.red, title="Tenkan Sen (Conversion Line)")
+plot(kijunSen, color=color.blue, title="Kijun Sen (Base Line)")
+plot(senkouSpanB[displacement], color=color.orange, title="Senkou Span B")

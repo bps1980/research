@@ -1,0 +1,39 @@
+//@version=4
+strategy("200 SMA with Stoch and RSI Swing Strategy", overlay=true)
+
+// Parameters
+sma_length = 200
+rsi_length = 14
+rsi_overbought = 70
+rsi_oversold = 30
+stoch_length = 14
+stoch_overbought = 80
+stoch_oversold = 20
+
+// Indicators
+price_above_sma = close > sma(close, sma_length)
+price_below_sma = close < sma(close, sma_length)
+
+rsi_val = rsi(close, rsi_length)
+stochK = stoch(close, high, low, stoch_length)
+stochD = sma(stochK, 3) // Using a simple 3-period moving average for %D
+
+// Entry Conditions
+long_condition = price_above_sma and rsi_val < rsi_oversold and stochK < stoch_oversold
+short_condition = price_below_sma and rsi_val > rsi_overbought and stochK > stoch_overbought
+
+// Exit Conditions
+long_exit_condition = rsi_val > rsi_overbought or stochK > stoch_overbought
+short_exit_condition = rsi_val < rsi_oversold or stochK < stoch_oversold
+
+// Plotting
+plotshape(series=long_condition, title="Long Entry", location=location.belowbar, color=color.green, style=shape.labelup, text="Buy")
+plotshape(series=short_condition, title="Short Entry", location=location.abovebar, color=color.red, style=shape.labeldown, text="Sell")
+plotshape(series=long_exit_condition and strategy.position_size > 0, title="Long Exit", location=location.abovebar, color=color.red, style=shape.labeldown, text="Sell")
+plotshape(series=short_exit_condition and strategy.position_size < 0, title="Short Exit", location=location.belowbar, color=color.green, style=shape.labelup, text="Buy")
+
+// Strategy Execution
+strategy.entry("Long", strategy.long, when = long_condition)
+strategy.close("Long", when = long_exit_condition)
+strategy.entry("Short", strategy.short, when = short_condition)
+strategy.close("Short", when = short_exit_condition)

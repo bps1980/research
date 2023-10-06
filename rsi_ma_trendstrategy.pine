@@ -1,0 +1,27 @@
+//@version=4
+strategy("RSI & MA Trend Strategy", overlay=true)
+
+// RSI Settings
+rsiSource = close
+rsiLength = 14
+overbought = 70
+oversold = 30
+rsi = rsi(rsiSource, rsiLength)
+
+// Moving Average Settings
+maLength = input(200, title="MA Length", minval=1)
+ma = sma(close, maLength)
+
+// Buy and Sell conditions
+buyCondition = crossover(rsi, oversold) and close > ma
+sellCondition = crossunder(rsi, overbought) and close < ma
+
+// Plotting
+plot(rsi, "RSI", color=color.blue)
+hline(overbought, "Overbought Level", color=color.red)
+hline(oversold, "Oversold Level", color=color.green)
+plot(ma, "200 SMA", color=color.orange)
+
+// Create strategy orders
+strategy.entry("Buy", strategy.long, when = buyCondition)
+strategy.close("Buy", when = sellCondition)

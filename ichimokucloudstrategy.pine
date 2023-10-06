@@ -1,0 +1,30 @@
+//@version=5
+strategy("Ichimoku Cloud Strategy", overlay=true)
+
+// Ichimoku Cloud settings
+conversionLinePeriods = input(9, title="Tenkan Sen (Conversion Line) Periods")
+baseLinePeriods = input(26, title="Kijun Sen (Base Line) Periods")
+laggingSpan2Periods = input(52, title="Chikou Span (Lagging Span) Periods")
+displacement = input(26, title="Displacement")
+
+// Ichimoku Cloud calculations
+tenkanSen = (ta.highest(high, conversionLinePeriods) + ta.lowest(low, conversionLinePeriods)) / 2
+kijunSen = (ta.highest(high, baseLinePeriods) + ta.lowest(low, baseLinePeriods)) / 2
+senkouSpanA = (tenkanSen + kijunSen) / 2
+senkouSpanB = (ta.highest(high, laggingSpan2Periods) + ta.lowest(low, laggingSpan2Periods)) / 2
+chikouSpan = close[displacement]
+
+// Entry Rules
+longCondition = ta.crossover(tenkanSen, kijunSen) and close > senkouSpanA[displacement] and close > senkouSpanB[displacement]
+shortCondition = ta.crossunder(tenkanSen, kijunSen) and close < senkouSpanA[displacement] and close < senkouSpanB[displacement]
+
+// Strategy order placement
+strategy.entry("Long", strategy.long, when=longCondition)
+strategy.entry("Short", strategy.short, when=shortCondition)
+
+// Plot Ichimoku Cloud
+plot(tenkanSen, color=color.red, title="Tenkan Sen (Conversion Line)")
+plot(kijunSen, color=color.blue, title="Kijun Sen (Base Line)")
+plotSenkouSpanA = plot(senkouSpanA[displacement], color=color.green, title="Senkou Span A")
+plotSenkouSpanB = plot(senkouSpanB[displacement], color=color.orange, title="Senkou Span B")
+fill(plotSenkouSpanA, plotSenkouSpanB, color=senkouSpanA[displacement] > senkouSpanB[displacement] ? color.new(color.green, 80) : color.new(color.red, 80), title="Cloud")

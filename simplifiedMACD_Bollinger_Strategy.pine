@@ -1,0 +1,33 @@
+//@version=4
+strategy("Simplified MACD Bollinger Strategy", overlay=true)
+
+// MACD Settings
+fastLength = 8
+slowLength = 35
+signalLength = 6
+macdLine = ema(close, fastLength) - ema(close, slowLength)
+signalLine = sma(macdLine, signalLength)
+
+// Bollinger Bands Settings
+length = 20
+src = close
+mult = 2.0
+basis = sma(src, length)
+upper = basis + mult * stdev(src, length)
+lower = basis - mult * stdev(src, length)
+thresholdPercentage = 1.03  // Adjust as necessary; 1.03 means 3% above the lower band and 3% below the upper band.
+
+// Buy and Sell Conditions
+longCondition = crossover(macdLine, signalLine) and close <= lower * thresholdPercentage
+shortCondition = crossunder(macdLine, signalLine) and close >= upper / thresholdPercentage
+
+// Entries and Exits
+strategy.entry("Long", strategy.long, when = longCondition)
+strategy.close("Long", when = shortCondition)
+
+// Plotting
+plotshape(longCondition, style=shape.triangleup, location=location.belowbar, color=color.green, size=size.small)
+plotshape(shortCondition, style=shape.triangledown, location=location.abovebar, color=color.red, size=size.small)
+plot(basis, color=color.blue)
+plot(upper, color=color.red)
+plot(lower, color=color.green)
