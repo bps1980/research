@@ -1,0 +1,13 @@
+//@version=4
+strategy("Cup and Handle Pattern", shorttitle="C&HP", overlay=true)
+
+// Basic logic: identify the cup's bottom, then detect a rise (cup's right edge), followed by a handle (small pullback), and then breakout.
+bottom = low < lowest(low, 20)[10] 
+rise = bottom[20] and high > highest(high, 20)[10]
+handle = rise[10] and high < high[10] and low > low[10]
+breakout = handle[5] and close > high[15]
+
+if breakout
+    strategy.entry("CupHandleLong", strategy.long)
+
+plotshape(breakout, title="Cup & Handle", location=location.belowbar, color=color.green, style=shape.triangleup, text="C&H")

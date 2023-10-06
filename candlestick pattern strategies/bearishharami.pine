@@ -1,0 +1,9 @@
+//@version=4
+strategy("Bearish Harami Pattern", shorttitle="DHP", overlay=true)
+
+bearishHarami = close[1] > open[1] and close < open and close > open[1] and open < close[1]
+
+if bearishHarami
+    strategy.entry("BearishHaramiShort", strategy.short)
+
+plotshape(bearishHarami, title="Bearish Harami", location=location.abovebar, color=color.red, style=shape.labeldown, text="BH")

@@ -1,0 +1,9 @@
+//@version=4
+strategy("Evening Star Pattern", shorttitle="ESP", overlay=true)
+
+isEveningStar = close[2] > open[2] and (open[1] < close[2] or close[1] > open[2]) and close < open and close < open[1] and close < close[1]
+
+if isEveningStar
+    strategy.entry("EveningStarShort", strategy.short)
+
+plotshape(isEveningStar, title="Evening Star", location=location.abovebar, color=color.red, style=shape.triangledown, text="ES")

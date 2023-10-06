@@ -1,0 +1,9 @@
+//@version=4
+strategy("Morning Star Pattern", shorttitle="MSP", overlay=true)
+
+isMorningStar = close[2] < open[2] and (open[1] > close[2] or close[1] < open[2]) and close > open and close > open[1] and close > close[1]
+
+if isMorningStar
+    strategy.entry("MorningStarLong", strategy.long)
+
+plotshape(isMorningStar, title="Morning Star", location=location.belowbar, color=color.green, style=shape.triangleup, text="MS")

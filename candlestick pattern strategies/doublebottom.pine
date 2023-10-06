@@ -1,0 +1,12 @@
+//@version=4
+strategy("Double Bottom Pattern", shorttitle="DBP", overlay=true)
+
+trough1 = low < low[1] and low < low[2]
+trough2 = trough1[20] and low < low[1] and low < low[2]
+peak = high[10] < high and high[10] < high[20]
+doubleBottom = trough1 and trough2 and peak
+
+if doubleBottom
+    strategy.entry("DoubleBottomLong", strategy.long)
+
+plotshape(doubleBottom, title="Double Bottom", location=location.belowbar, color=color.green, style=shape.triangleup, text="DB")

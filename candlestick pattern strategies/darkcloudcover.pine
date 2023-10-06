@@ -1,0 +1,9 @@
+//@version=4
+strategy("Dark Cloud Cover Pattern", shorttitle="DCCP", overlay=true)
+
+darkCloudCover = close[1] > open[1] and close < open and close < (open[1] + close[1]) / 2 and open > high[1]
+
+if darkCloudCover
+    strategy.entry("DarkCloudCoverShort", strategy.short)
+
+plotshape(darkCloudCover, title="Dark Cloud Cover", location=location.abovebar, color=color.red, style=shape.labeldown, text="DCC")

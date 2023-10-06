@@ -1,0 +1,9 @@
+//@version=4
+strategy("Shooting Star Pattern", shorttitle="SSP", overlay=true)
+
+isShootingStar = close < open and low - min(close, open) <= (close - open) * 0.5 and high - open > (close - open) * 2
+
+if isShootingStar
+    strategy.entry("ShootingStarShort", strategy.short)
+
+plotshape(isShootingStar, title="Shooting Star", location=location.abovebar, color=color.red, style=shape.labeldown, text="SS")

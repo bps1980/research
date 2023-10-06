@@ -1,0 +1,29 @@
+//@version=4
+strategy("Parabolic SAR Strategy", overlay=true)
+
+// Parabolic SAR settings
+start = input(0.02, title="Start")
+increment = input(0.02, title="Increment")
+max = input(0.2, title="Max")
+
+// Calculate Parabolic SAR
+psar = sar(start, increment, max)
+
+// Plot Parabolic SAR on chart
+plot(psar, color=color.red, style=plot.style_cross, linewidth=1)
+
+// Strategy logic
+longCondition = crossover(close, psar)
+shortCondition = crossunder(close, psar)
+
+if (longCondition)
+    strategy.close("SAR SHORT")
+    strategy.entry("SAR LONG", strategy.long)
+
+if (shortCondition)
+    strategy.close("SAR LONG")
+    strategy.entry("SAR SHORT", strategy.short)
+
+// Plot buy and sell signals on the chart
+plotshape(series=longCondition, title="Buy Signal", location=location.belowbar, color=color.green, style=shape.labelup, text="BUY")
+plotshape(series=shortCondition, title="Sell Signal", location=location.abovebar, color=color.red, style=shape.labeldown, text="SELL")

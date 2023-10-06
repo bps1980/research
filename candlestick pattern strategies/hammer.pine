@@ -1,0 +1,9 @@
+//@version=4
+strategy("Hammer Pattern", shorttitle="HP", overlay=true)
+
+isHammer = close > open and high - max(close, open) <= (open - close) * 0.5 and open - low > (open - close) * 2
+
+if isHammer
+    strategy.entry("HammerLong", strategy.long)
+
+plotshape(isHammer, title="Hammer", location=location.belowbar, color=color.green, style=shape.labelup, text="H")

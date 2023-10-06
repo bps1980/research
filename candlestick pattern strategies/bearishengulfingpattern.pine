@@ -1,0 +1,9 @@
+//@version=4
+strategy("Bearish Engulfing Pattern", shorttitle="DEP", overlay=true)
+
+bearishEngulfing = close[1] > open[1] and close < open and close < open[1] and open > close[1]
+
+if bearishEngulfing
+    strategy.entry("BearishEngulfingShort", strategy.short)
+
+plotshape(bearishEngulfing, title="Bearish Engulfing", location=location.abovebar, color=color.red, style=shape.labeldown, text="BE")

@@ -1,0 +1,12 @@
+//@version=4
+strategy("Double Top Pattern", shorttitle="DTP", overlay=true)
+
+peak1 = high > high[1] and high > high[2]
+peak2 = peak1[20] and high > high[1] and high > high[2]
+valley = low[10] > low and low[10] > low[20]
+doubleTop = peak1 and peak2 and valley
+
+if doubleTop
+    strategy.entry("DoubleTopShort", strategy.short)
+
+plotshape(doubleTop, title="Double Top", location=location.abovebar, color=color.red, style=shape.triangledown, text="DT")

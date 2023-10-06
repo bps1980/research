@@ -1,0 +1,9 @@
+//@version=4
+strategy("Piercing Line Pattern", shorttitle="PLP", overlay=true)
+
+piercingLine = close[1] < open[1] and close > open and close > (open[1] + close[1]) / 2 and open < low[1]
+
+if piercingLine
+    strategy.entry("PiercingLineLong", strategy.long)
+
+plotshape(piercingLine, title="Piercing Line", location=location.belowbar, color=color.green, style=shape.labelup, text="PL")

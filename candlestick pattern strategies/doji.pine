@@ -1,0 +1,6 @@
+//@version=4
+strategy("Doji Pattern", shorttitle="DP", overlay=true)
+
+isDoji = abs(close - open) <= (high - low) * 0.1
+
+plotshape(isDoji, title="Doji", location=location.belowbar, color=color.blue, style=shape.xcross, text="D")
